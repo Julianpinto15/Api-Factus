@@ -1,6 +1,5 @@
-package factusBackend.domain.model;
+package factusBackend.presentation.dtos;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,29 +10,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class InvoiceItemDTO {
     private String code;
     private String description;
+    private BigDecimal quantity;
     private BigDecimal price;
     private String unitMeasurementId;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tax> taxes;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private List<TaxDTO> taxations;
 
     public String getCode() {
         return code;
@@ -49,6 +32,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
     }
 
     public BigDecimal getPrice() {
@@ -67,11 +58,11 @@ public class Product {
         this.unitMeasurementId = unitMeasurementId;
     }
 
-    public List<Tax> getTaxes() {
-        return taxes;
+    public List<TaxDTO> getTaxations() {
+        return taxations;
     }
 
-    public void setTaxes(List<Tax> taxes) {
-        this.taxes = taxes;
+    public void setTaxations(List<TaxDTO> taxations) {
+        this.taxations = taxations;
     }
 }

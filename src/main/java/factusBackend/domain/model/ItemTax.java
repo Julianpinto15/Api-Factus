@@ -11,18 +11,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "taxes")
-public class Tax {
+@Table(name = "item_taxes")
+public class ItemTax {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String taxId;
     private BigDecimal value;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
 
 
     public Long getId() {
@@ -33,14 +29,6 @@ public class Tax {
         this.id = id;
     }
 
-    public BigDecimal getValue() {
-        return value;
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value = value;
-    }
-
     public String getTaxId() {
         return taxId;
     }
@@ -49,11 +37,11 @@ public class Tax {
         this.taxId = taxId;
     }
 
-    public Product getProduct() {
-        return product;
+    public BigDecimal getValue() {
+        return value;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setValue(BigDecimal value) {
+        this.value = value;
     }
 }

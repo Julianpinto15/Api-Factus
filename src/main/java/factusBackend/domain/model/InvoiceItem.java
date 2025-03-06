@@ -1,3 +1,4 @@
+
 package factusBackend.domain.model;
 
 import jakarta.persistence.*;
@@ -6,25 +7,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "invoice_items")
+public class InvoiceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String code;
     private String description;
+    private BigDecimal quantity;
     private BigDecimal price;
     private String unitMeasurementId;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tax> taxes;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "invoice_item_id")
+    private List<ItemTax> taxations = new ArrayList<>();
 
 
     public Long getId() {
@@ -51,6 +55,14 @@ public class Product {
         this.description = description;
     }
 
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -67,11 +79,11 @@ public class Product {
         this.unitMeasurementId = unitMeasurementId;
     }
 
-    public List<Tax> getTaxes() {
-        return taxes;
+    public List<ItemTax> getTaxations() {
+        return taxations;
     }
 
-    public void setTaxes(List<Tax> taxes) {
-        this.taxes = taxes;
+    public void setTaxations(List<ItemTax> taxations) {
+        this.taxations = taxations;
     }
 }
