@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface JpaClientRepository extends JpaRepository<Client, Long>, ClientRepository {
     @Override
-    Optional<Client> findByIdentificationNumber(String identificationNumber);
+    Optional<Client> findByIdentification(String identification);
 }

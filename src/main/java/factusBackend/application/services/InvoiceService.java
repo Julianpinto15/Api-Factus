@@ -5,7 +5,7 @@ import factusBackend.infrastructure.adapters.FactusApiAdapter;
 import factusBackend.presentation.dtos.InvoiceRequestDTO;
 import factusBackend.presentation.dtos.InvoiceResponseDTO;
 import org.springframework.stereotype.Service;
-
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -32,39 +32,67 @@ public class InvoiceService {
         return factusApiAdapter.validateInvoice(invoiceId);
     }
 
-    private Map<String, Object> transformToFactusFormat(InvoiceRequestDTO requestDTO) {
-        // Aquí implementarías la lógica para transformar tu DTO a la estructura esperada por Factus
-        // Sería un mapa con la estructura específica que solicita Factus
-        // Esto dependerá de la documentación de la API y el formato que espera
 
-        // Este es un ejemplo basado en la estructura típica, ajústalo según necesites
-        return Map.of(
-                "invoice", Map.of(
-                        "number_range_id", requestDTO.getNumberRangeId(),
-                        "currency_id", "COP",
-                        "generation_date", requestDTO.getGenerationDate(),
-                        "customer", Map.of(
-                                "type_document_identification_id", requestDTO.getClient().getTypeDocumentId(),
-                                "identification_number", requestDTO.getClient().getIdentificationNumber(),
-                                "name", requestDTO.getClient().getName(),
-                                "country_id", requestDTO.getClient().getCountryId(),
-                                "municipality_id", requestDTO.getClient().getMunicipalityId(),
-                                "address", requestDTO.getClient().getAddress(),
-                                "email", requestDTO.getClient().getEmail()
-                        ),
-                        "detail", requestDTO.getItems().stream().map(item -> Map.of(
-                                "code", item.getCode(),
-                                "description", item.getDescription(),
-                                "quantity", item.getQuantity(),
-                                "price", item.getPrice(),
-                                "unit_measurement_id", item.getUnitMeasurementId(),
-                                "taxation", item.getTaxations().stream().map(tax -> Map.of(
-                                        "id", tax.getId(),
-                                        "value", tax.getValue()
-                                )).toList()
-                        )).toList()
-                )
-        );
+    private Map<String, Object> transformToFactusFormat(InvoiceRequestDTO requestDTO) {
+        Map<String, Object> invoiceData = new HashMap<>();
+
+        invoiceData.put("numbering_range_id", requestDTO.getNumbering_range_id());
+        invoiceData.put("reference_code", requestDTO.getReference_code());
+        invoiceData.put("observation", requestDTO.getObservation());
+        invoiceData.put("payment_form", requestDTO.getPayment_form());
+        invoiceData.put("payment_due_date", requestDTO.getPayment_due_date());
+        invoiceData.put("payment_method_code", requestDTO.getPayment_method_code());
+
+        // Billing Period
+        Map<String, String> billingPeriod = new HashMap<>();
+        billingPeriod.put("start_date", requestDTO.getBilling_period().getStart_date());
+        billingPeriod.put("start_time", requestDTO.getBilling_period().getStart_time());
+        billingPeriod.put("end_date", requestDTO.getBilling_period().getEnd_date());
+        billingPeriod.put("end_time", requestDTO.getBilling_period().getEnd_time());
+        invoiceData.put("billing_period", billingPeriod);
+
+        // Customer
+        Map<String, Object> customer = new HashMap<>();
+        customer.put("identification", requestDTO.getCustomer().getIdentification());
+        customer.put("dv", requestDTO.getCustomer().getDv());
+        customer.put("company", requestDTO.getCustomer().getCompany());
+        customer.put("trade_name", requestDTO.getCustomer().getTrade_name());
+        customer.put("names", requestDTO.getCustomer().getNames());
+        customer.put("address", requestDTO.getCustomer().getAddress());
+        customer.put("email", requestDTO.getCustomer().getEmail());
+        customer.put("phone", requestDTO.getCustomer().getPhone());
+        customer.put("legal_organization_id", requestDTO.getCustomer().getLegal_organization_id());
+        customer.put("tribute_id", requestDTO.getCustomer().getTribute_id());
+        customer.put("identification_document_id", requestDTO.getCustomer().getIdentification_document_id());
+        customer.put("municipality_id", requestDTO.getCustomer().getMunicipality_id());
+        invoiceData.put("customer", customer);
+
+        // Items
+        invoiceData.put("items", requestDTO.getItems().stream().map(item -> {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("code_reference", item.getCode_reference());
+            itemMap.put("name", item.getName());
+            itemMap.put("quantity", item.getQuantity());
+            itemMap.put("discount_rate", item.getDiscount_rate());
+            itemMap.put("price", item.getPrice());
+            itemMap.put("tax_rate", item.getTax_rate());
+            itemMap.put("unit_measure_id", item.getUnit_measure_id());
+            itemMap.put("standard_code_id", item.getStandard_code_id());
+            itemMap.put("is_excluded", item.getIs_excluded());
+            itemMap.put("tribute_id", item.getTribute_id());
+
+            // Withholding Taxes
+            itemMap.put("withholding_taxes", item.getWithholding_taxes().stream().map(tax -> {
+                Map<String, String> taxMap = new HashMap<>();
+                taxMap.put("code", tax.getCode());
+                taxMap.put("withholding_tax_rate", tax.getWithholding_tax_rate());
+                return taxMap;
+            }).toList());
+
+            return itemMap;
+        }).toList());
+
+        return invoiceData;
     }
 
     private InvoiceResponseDTO transformToResponseDTO(Map<String, Object> response) {

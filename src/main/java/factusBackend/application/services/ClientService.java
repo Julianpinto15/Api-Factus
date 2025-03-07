@@ -25,9 +25,10 @@ public class ClientService {
         return clientRepository.findById(id);
     }
 
-    public Optional<Client> findClientByIdentificationNumber(String identificationNumber) {
-        return clientRepository.findByIdentificationNumber(identificationNumber);
+    public Optional<Client> findClientByIdentification(String identification) {
+        return clientRepository.findByIdentification(identification); // Cambiar aquí
     }
+
 
     public void deleteClientById(Long id) {
         clientRepository.deleteById(id);

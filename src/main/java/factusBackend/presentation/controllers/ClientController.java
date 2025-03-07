@@ -5,15 +5,12 @@ import factusBackend.common.constans.ApiConstants;
 import factusBackend.common.dto.ResponseWrapper;
 import factusBackend.common.exceptions.ResourceNotFoundException;
 import factusBackend.domain.model.Client;
-import factusBackend.presentation.dtos.ClientDTO;
+import factusBackend.presentation.dtos.CustomerDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(ApiConstants.API_BASE_PATH + ApiConstants.CLIENTS_PATH)
@@ -27,70 +24,71 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<ClientDTO>> createClient(@RequestBody ClientDTO clientDTO) {
-        Client client = convertToEntity(clientDTO);
+    public ResponseEntity<ResponseWrapper<CustomerDTO>> createClient(@RequestBody CustomerDTO customerDTO) {
+        Client client = convertToEntity(customerDTO);
         Client savedClient = clientService.saveClient(client);
-        ClientDTO savedClientDTO = convertToDTO(savedClient);
+        CustomerDTO savedCustomerDTO = convertToDTO(savedClient);
 
-        ResponseWrapper<ClientDTO> response = new ResponseWrapper<>(
+        ResponseWrapper<CustomerDTO> response = new ResponseWrapper<>(
                 true,
                 ApiConstants.SUCCESS_MESSAGE,
-                savedClientDTO
+                savedCustomerDTO
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ClientDTO>> getClientById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<CustomerDTO>> getClientById(@PathVariable Long id) {
         Client client = clientService.findClientById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " no encontrado"));
 
-        ClientDTO clientDTO = convertToDTO(client);
-        ResponseWrapper<ClientDTO> response = new ResponseWrapper<>(
+        CustomerDTO customerDTO = convertToDTO(client);
+        ResponseWrapper<CustomerDTO> response = new ResponseWrapper<>(
                 true,
                 ApiConstants.SUCCESS_MESSAGE,
-                clientDTO
+                customerDTO
         );
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/identification/{identificationNumber}")
-    public ResponseEntity<ResponseWrapper<ClientDTO>> getClientByIdentificationNumber(
-            @PathVariable String identificationNumber) {
-        Client client = clientService.findClientByIdentificationNumber(identificationNumber)
+    @GetMapping("/identification/{identification}")
+    public ResponseEntity<ResponseWrapper<CustomerDTO>> getClientByIdentification(
+            @PathVariable String identification) {
+        Client client = clientService.findClientByIdentification(identification)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cliente con número de identificación " + identificationNumber + " no encontrado"));
+                        "Cliente con número de identificación " + identification + " no encontrado"));
 
-        ClientDTO clientDTO = convertToDTO(client);
-        ResponseWrapper<ClientDTO> response = new ResponseWrapper<>(
+        CustomerDTO customerDTO = convertToDTO(client);
+        ResponseWrapper<CustomerDTO> response = new ResponseWrapper<>(
                 true,
                 ApiConstants.SUCCESS_MESSAGE,
-                clientDTO
+                customerDTO
         );
 
         return ResponseEntity.ok(response);
     }
+
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ClientDTO>> updateClient(
+    public ResponseEntity<ResponseWrapper<CustomerDTO>> updateClient(
             @PathVariable Long id,
-            @RequestBody ClientDTO clientDTO) {
+            @RequestBody CustomerDTO customerDTO) {
 
         // Check if client exists
         clientService.findClientById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente con ID " + id + " no encontrado"));
 
-        Client client = convertToEntity(clientDTO);
+        Client client = convertToEntity(customerDTO);
         client.setId(id);
         Client updatedClient = clientService.saveClient(client);
 
-        ClientDTO updatedClientDTO = convertToDTO(updatedClient);
-        ResponseWrapper<ClientDTO> response = new ResponseWrapper<>(
+        CustomerDTO updatedCustomerDTO = convertToDTO(updatedClient);
+        ResponseWrapper<CustomerDTO> response = new ResponseWrapper<>(
                 true,
                 ApiConstants.SUCCESS_MESSAGE,
-                updatedClientDTO
+                updatedCustomerDTO
         );
 
         return ResponseEntity.ok(response);
@@ -113,29 +111,37 @@ public class ClientController {
         return ResponseEntity.ok(response);
     }
 
-    private Client convertToEntity(ClientDTO clientDTO) {
+    private Client convertToEntity(CustomerDTO customerDTO) {
         Client client = new Client();
-        client.setTypeDocumentId(clientDTO.getTypeDocumentId());
-        client.setIdentificationNumber(clientDTO.getIdentificationNumber());
-        client.setName(clientDTO.getName());
-        client.setCountryId(clientDTO.getCountryId());
-        client.setMunicipalityId(clientDTO.getMunicipalityId());
-        client.setAddress(clientDTO.getAddress());
-        client.setEmail(clientDTO.getEmail());
-        client.setPhone(clientDTO.getPhone());
+        client.setIdentification_document_id(customerDTO.getIdentification_document_id());
+        client.setIdentification(customerDTO.getIdentification());
+        client.setNames(customerDTO.getNames());
+        client.setAddress(customerDTO.getAddress());
+        client.setEmail(customerDTO.getEmail());
+        client.setPhone(customerDTO.getPhone());
+        client.setMunicipality_id(customerDTO.getMunicipality_id());
+        client.setLegal_organization_id(customerDTO.getLegal_organization_id());
+        client.setTribute_id(customerDTO.getTribute_id());
+        client.setTrade_name(customerDTO.getTrade_name());
+        // Si `legal_organization_id` y `tribute_id` tienen relación directa con `Client`, puedes mapearlos.
+        // Agrega más mapeos si corresponde según la estructura de tu entidad `Client`.
         return client;
     }
 
-    private ClientDTO convertToDTO(Client client) {
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setTypeDocumentId(client.getTypeDocumentId());
-        clientDTO.setIdentificationNumber(client.getIdentificationNumber());
-        clientDTO.setName(client.getName());
-        clientDTO.setCountryId(client.getCountryId());
-        clientDTO.setMunicipalityId(client.getMunicipalityId());
-        clientDTO.setAddress(client.getAddress());
-        clientDTO.setEmail(client.getEmail());
-        clientDTO.setPhone(client.getPhone());
-        return clientDTO;
+    private CustomerDTO convertToDTO(Client client) {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setIdentification_document_id(client.getIdentification_document_id());
+        customerDTO.setIdentification(client.getIdentification());
+        customerDTO.setNames(client.getNames());
+        customerDTO.setAddress(client.getAddress());
+        customerDTO.setEmail(client.getEmail());
+        customerDTO.setPhone(client.getPhone());
+        customerDTO.setMunicipality_id(client.getMunicipality_id());
+        customerDTO.setLegal_organization_id(client.getLegal_organization_id());
+        customerDTO.setTribute_id(client.getTribute_id());
+        customerDTO.setTrade_name(client.getTrade_name());
+        // Si `legal_organization_id` y `tribute_id` deben derivarse de propiedades del `Client`, agrega la lógica aquí.
+        return customerDTO;
     }
+
 }

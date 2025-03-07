@@ -9,9 +9,9 @@ public class ApiConstants {
 
     // Factus API endpoints
     public static final String FACTUS_AUTH_ENDPOINT = "/oauth/token";
-    public static final String FACTUS_CREATE_INVOICE_ENDPOINT = "/api/v2/invoices";
+    public static final String FACTUS_CREATE_INVOICE_ENDPOINT = "/v1/bills";
     public static final String FACTUS_VALIDATE_INVOICE_ENDPOINT = "/api/v2/invoices/{id}/validate";
-    public static final String FACTUS_COUNTRIES_ENDPOINT = "/api/v2/countries";
+    public static final String FACTUS_COUNTRIES_ENDPOINT = "/v1/countries?name=";
     public static final String FACTUS_MUNICIPALITIES_ENDPOINT = "/api/v2/municipalities";
     public static final String FACTUS_TAXATION_ENDPOINT = "/api/v2/taxation";
     public static final String FACTUS_UNITS_ENDPOINT = "/api/v2/units";

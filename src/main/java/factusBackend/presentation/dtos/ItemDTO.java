@@ -1,25 +1,16 @@
+package factusBackend.presentation.dtos;
 
-package factusBackend.domain.model;
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "invoice_items")
-public class InvoiceItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class ItemDTO {
     private String code_reference;
     private String name;
     private int quantity;
@@ -30,18 +21,7 @@ public class InvoiceItem {
     private int standard_code_id;
     private int is_excluded;
     private int tribute_id;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "invoice_item_id")
-    private List<ItemTax> taxations = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private List<WithholdingTaxDTO> withholding_taxes;
 
     public String getCode_reference() {
         return code_reference;
@@ -123,11 +103,11 @@ public class InvoiceItem {
         this.tribute_id = tribute_id;
     }
 
-    public List<ItemTax> getTaxations() {
-        return taxations;
+    public List<WithholdingTaxDTO> getWithholding_taxes() {
+        return withholding_taxes;
     }
 
-    public void setTaxations(List<ItemTax> taxations) {
-        this.taxations = taxations;
+    public void setWithholding_taxes(List<WithholdingTaxDTO> withholding_taxes) {
+        this.withholding_taxes = withholding_taxes;
     }
 }
