@@ -10,23 +10,29 @@ import reactor.core.publisher.Mono;
 public class InvoiceService {
 
     private final WebClient webClient;
+    private final AuthenticationService authenticationService;
 
-    public InvoiceService(WebClient webClient) {
+    public InvoiceService(WebClient webClient, AuthenticationService authenticationService) {
         this.webClient = webClient;
+        this.authenticationService = authenticationService;
     }
 
     public Mono<InvoiceResponseDTO> createInvoice(InvoiceRequestDTO invoiceRequest) {
-        return webClient.post()
-                .uri("/v1/bills/validate")
-                .bodyValue(invoiceRequest)
-                .retrieve()
-                .bodyToMono(InvoiceResponseDTO.class);
+        return authenticationService.getAccessToken()
+                .flatMap(token -> webClient.post()
+                        .uri("/v1/bills/validate")
+                        .header("Authorization", "Bearer " + token)
+                        .bodyValue(invoiceRequest)
+                        .retrieve()
+                        .bodyToMono(InvoiceResponseDTO.class));
     }
 
     public Mono<InvoiceResponseDTO> getInvoice(String invoiceNumber) {
-        return webClient.get()
-                .uri("/v1/bills/show/{number}", invoiceNumber)
-                .retrieve()
-                .bodyToMono(InvoiceResponseDTO.class);
+        return authenticationService.getAccessToken()
+                .flatMap(token -> webClient.get()
+                        .uri("/v1/bills/show/{number}", invoiceNumber)
+                        .header("Authorization", "Bearer " + token)
+                        .retrieve()
+                        .bodyToMono(InvoiceResponseDTO.class));
     }
 }
