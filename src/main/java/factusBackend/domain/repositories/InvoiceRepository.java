@@ -8,6 +8,6 @@ public interface InvoiceRepository {
     Invoice save(Invoice invoice);
     Optional<Invoice> findById(Long id);
     Optional<Invoice> findByFactusId(String factusId);
-    List<Invoice> findByClientId(Long clientId);
+    List<Invoice> findByClient_Id(Long clientId);
     List<Invoice> findAll();
 }

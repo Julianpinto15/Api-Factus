@@ -2,6 +2,9 @@ package factusBackend.infrastructure.adapters;
 
 import factusBackend.common.constans.ApiConstants;
 import factusBackend.common.exceptions.ResourceNotFoundException;
+import factusBackend.presentation.controllers.InvoiceController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +20,7 @@ public class FactusApiAdapter {
 
     private final WebClient webClient;
     private final AuthenticationAdapter authAdapter;
+    private static final Logger logger = LoggerFactory.getLogger(FactusApiAdapter.class);
 
     public FactusApiAdapter(WebClient webClient, AuthenticationAdapter authAdapter) {
         this.webClient = webClient;
@@ -25,6 +29,9 @@ public class FactusApiAdapter {
 
     public Map<String, Object> createInvoice(Map<String, Object> invoiceData) {
         try {
+            // Log para depuración
+            logger.debug("Enviando solicitud a Factus API: {}", invoiceData);
+
             return webClient.post()
                     .uri(ApiConstants.FACTUS_CREATE_INVOICE_ENDPOINT)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + authAdapter.getAccessToken())
@@ -32,20 +39,22 @@ public class FactusApiAdapter {
                     .bodyValue(invoiceData)
                     .retrieve()
                     .onStatus(status -> status.is4xxClientError(), response -> {
-                        if (response.statusCode() == HttpStatus.UNAUTHORIZED) {
-                            authAdapter.refreshAccessToken();
-                            return Mono.error(new RuntimeException("Token expirado, por favor intente nuevamente"));
-                        }
+                        // Log para depuración
+                        logger.error("Error cliente al crear factura: {}", response.statusCode());
                         return response.bodyToMono(String.class)
                                 .flatMap(error -> Mono.error(new RuntimeException("Error cliente: " + error)));
                     })
-                    .onStatus(status -> status.is5xxServerError(), response ->
-                            response.bodyToMono(String.class)
-                                    .flatMap(error -> Mono.error(new RuntimeException("Error servidor: " + error)))
-                    )
+                    .onStatus(status -> status.is5xxServerError(), response -> {
+                        // Log para depuración
+                        logger.error("Error servidor al crear factura: {}", response.statusCode());
+                        return response.bodyToMono(String.class)
+                                .flatMap(error -> Mono.error(new RuntimeException("Error servidor: " + error)));
+                    })
                     .bodyToMono(Map.class)
                     .block();
         } catch (WebClientResponseException e) {
+            // Log para depuración
+            logger.error("Error al crear factura: {}", e.getResponseBodyAsString(), e);
             throw new RuntimeException("Error al crear factura: " + e.getResponseBodyAsString(), e);
         }
     }

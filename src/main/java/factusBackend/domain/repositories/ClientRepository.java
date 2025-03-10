@@ -9,3 +9,4 @@ public interface ClientRepository {
     Optional<Client> findByIdentification(String identification); // Cambiar aquí
     void deleteById(Long id);
 }
+

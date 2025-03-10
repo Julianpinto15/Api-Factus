@@ -22,14 +22,14 @@ public class InvoiceItem {
 
     private String code_reference;
     private String name;
-    private int quantity;
-    private double discount_rate;
-    private double price;
+    private Integer quantity;
+    private Double discount_rate;
+    private Double price;
     private String tax_rate;
-    private int unit_measure_id;
-    private int standard_code_id;
-    private int is_excluded;
-    private int tribute_id;
+    private Integer unit_measure_id;
+    private Integer standard_code_id;
+    private Integer is_excluded;
+    private Integer tribute_id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "invoice_item_id")
@@ -59,27 +59,27 @@ public class InvoiceItem {
         this.name = name;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public double getDiscount_rate() {
+    public Double getDiscount_rate() {
         return discount_rate;
     }
 
-    public void setDiscount_rate(double discount_rate) {
+    public void setDiscount_rate(Double discount_rate) {
         this.discount_rate = discount_rate;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -91,35 +91,35 @@ public class InvoiceItem {
         this.tax_rate = tax_rate;
     }
 
-    public int getUnit_measure_id() {
+    public Integer getUnit_measure_id() {
         return unit_measure_id;
     }
 
-    public void setUnit_measure_id(int unit_measure_id) {
+    public void setUnit_measure_id(Integer unit_measure_id) {
         this.unit_measure_id = unit_measure_id;
     }
 
-    public int getStandard_code_id() {
+    public Integer getStandard_code_id() {
         return standard_code_id;
     }
 
-    public void setStandard_code_id(int standard_code_id) {
+    public void setStandard_code_id(Integer standard_code_id) {
         this.standard_code_id = standard_code_id;
     }
 
-    public int getIs_excluded() {
+    public Integer getIs_excluded() {
         return is_excluded;
     }
 
-    public void setIs_excluded(int is_excluded) {
+    public void setIs_excluded(Integer is_excluded) {
         this.is_excluded = is_excluded;
     }
 
-    public int getTribute_id() {
+    public Integer getTribute_id() {
         return tribute_id;
     }
 
-    public void setTribute_id(int tribute_id) {
+    public void setTribute_id(Integer tribute_id) {
         this.tribute_id = tribute_id;
     }
 

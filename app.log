@@ -1,0 +1,10 @@
+2025-03-10T08:55:12.513-05:00  WARN 24000 --- [factus-api-integration] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1d12h50m56s637ms223µs200ns).
+2025-03-10T09:12:35.116-05:00  INFO 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-10T09:12:35.157-05:00  INFO 24000 --- [factus-api-integration] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-10T09:12:35.290-05:00  INFO 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-10T09:12:35.291-05:00 DEBUG 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] o.hibernate.internal.SessionFactoryImpl  : HHH000031: Closing
+2025-03-10T09:12:35.293-05:00 DEBUG 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] o.h.type.spi.TypeConfiguration$Scope     : Un-scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration$Scope@90b57e1] from SessionFactory [org.hibernate.internal.SessionFactoryImpl@65ab0e]
+2025-03-10T09:12:35.293-05:00 DEBUG 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] o.h.s.i.AbstractServiceRegistryImpl      : Implicitly destroying ServiceRegistry on de-registration of all child ServiceRegistries
+2025-03-10T09:12:35.298-05:00 DEBUG 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] o.h.b.r.i.BootstrapServiceRegistryImpl   : Implicitly destroying Boot-strap registry on de-registration of all child ServiceRegistries
+2025-03-10T09:12:35.302-05:00  INFO 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-10T09:12:35.334-05:00  INFO 24000 --- [factus-api-integration] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

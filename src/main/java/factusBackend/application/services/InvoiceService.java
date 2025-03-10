@@ -2,8 +2,11 @@ package factusBackend.application.services;
 
 import factusBackend.domain.model.Invoice;
 import factusBackend.infrastructure.adapters.FactusApiAdapter;
+import factusBackend.presentation.controllers.InvoiceController;
 import factusBackend.presentation.dtos.InvoiceRequestDTO;
 import factusBackend.presentation.dtos.InvoiceResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,17 +15,33 @@ import java.util.Map;
 public class InvoiceService {
 
     private final FactusApiAdapter factusApiAdapter;
+    private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
     public InvoiceService(FactusApiAdapter factusApiAdapter) {
         this.factusApiAdapter = factusApiAdapter;
     }
 
     public InvoiceResponseDTO createInvoice(InvoiceRequestDTO requestDTO) {
+        // Validar que el DTO no sea nulo
+        if (requestDTO == null) {
+            logger.error("El DTO de la factura no puede ser nulo");
+            throw new IllegalArgumentException("El DTO de la factura no puede ser nulo");
+        }
+
+        // Log para depuración
+        logger.debug("Transformando DTO a formato de Factus: {}", requestDTO);
+
         // Convertir el DTO a un formato compatible con la API de Factus
         Map<String, Object> invoiceData = transformToFactusFormat(requestDTO);
 
+        // Log para depuración
+        logger.debug("Datos transformados para Factus: {}", invoiceData);
+
         // Llamar a la API de Factus
         Map<String, Object> response = factusApiAdapter.createInvoice(invoiceData);
+
+        // Log para depuración
+        logger.debug("Respuesta de Factus: {}", response);
 
         // Transformar respuesta a nuestro DTO
         return transformToResponseDTO(response);
@@ -36,6 +55,15 @@ public class InvoiceService {
     private Map<String, Object> transformToFactusFormat(InvoiceRequestDTO requestDTO) {
         Map<String, Object> invoiceData = new HashMap<>();
 
+        // Validar campos obligatorios
+        if (requestDTO.getNumbering_range_id() == null) {
+            throw new IllegalArgumentException("El campo 'numbering_range_id' es requerido");
+        }
+        if (requestDTO.getCustomer() == null) {
+            throw new IllegalArgumentException("El campo 'customer' es requerido");
+        }
+
+        // Mapear campos
         invoiceData.put("numbering_range_id", requestDTO.getNumbering_range_id());
         invoiceData.put("reference_code", requestDTO.getReference_code());
         invoiceData.put("observation", requestDTO.getObservation());

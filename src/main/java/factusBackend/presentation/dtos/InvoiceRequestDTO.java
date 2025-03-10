@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InvoiceRequestDTO {
 
-    private int numbering_range_id; // Ajustado a lo que la API espera
+    private Integer numbering_range_id; // Ajustado a lo que la API espera
     private String reference_code; // Nuevo campo
     private String observation; // Nuevo campo
     private String payment_form; // Nuevo campo
@@ -21,11 +21,11 @@ public class InvoiceRequestDTO {
     private CustomerDTO customer; // Ajustado a lo que la API espera
     private List<ItemDTO> items; // Ajustado a lo que la API espera
 
-    public int getNumbering_range_id() {
+    public Integer getNumbering_range_id() {
         return numbering_range_id;
     }
 
-    public void setNumbering_range_id(int numbering_range_id) {
+    public void setNumbering_range_id(Integer numbering_range_id) {
         this.numbering_range_id = numbering_range_id;
     }
 

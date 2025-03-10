@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,7 +22,7 @@ public class Invoice {
 
     private String factusId;
     private String invoiceNumber;
-    private String numberRangeId;
+    private Integer numberRangeId;
     private String status;
     private LocalDateTime generationDate;
     private BigDecimal totalAmount;
@@ -61,11 +60,11 @@ public class Invoice {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public String getNumberRangeId() {
+    public Integer getNumberRangeId() {
         return numberRangeId;
     }
 
-    public void setNumberRangeId(String numberRangeId) {
+    public void setNumberRangeId(Integer numberRangeId) {
         this.numberRangeId = numberRangeId;
     }
 
