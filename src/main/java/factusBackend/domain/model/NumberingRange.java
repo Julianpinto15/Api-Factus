@@ -1,27 +1,22 @@
 package factusBackend.domain.model;
 
+
+import lombok.Data;
+
+
+@Data
 public class NumberingRange {
     private String id;
     private String prefix;
-    private int fromNumber;
-    private int toNumber;
-    private int currentNumber;
-    private boolean active;
+    private Integer fromNumber;
+    private Integer toNumber;
+    private Integer currentNumber;
+    private Boolean active;
+    private String resolutionNumber;
+    private String startDate;
+    private String endDate;
+    private String technicalKey;
 
-    // Constructores
-    public NumberingRange() {
-    }
-
-    public NumberingRange(String id, String prefix, int fromNumber, int toNumber, int currentNumber, boolean active) {
-        this.id = id;
-        this.prefix = prefix;
-        this.fromNumber = fromNumber;
-        this.toNumber = toNumber;
-        this.currentNumber = currentNumber;
-        this.active = active;
-    }
-
-    // Getters y setters
     public String getId() {
         return id;
     }
@@ -38,47 +33,67 @@ public class NumberingRange {
         this.prefix = prefix;
     }
 
-    public int getFromNumber() {
+    public Integer getFromNumber() {
         return fromNumber;
     }
 
-    public void setFromNumber(int fromNumber) {
+    public void setFromNumber(Integer fromNumber) {
         this.fromNumber = fromNumber;
     }
 
-    public int getToNumber() {
+    public Integer getToNumber() {
         return toNumber;
     }
 
-    public void setToNumber(int toNumber) {
+    public void setToNumber(Integer toNumber) {
         this.toNumber = toNumber;
     }
 
-    public int getCurrentNumber() {
+    public Integer getCurrentNumber() {
         return currentNumber;
     }
 
-    public void setCurrentNumber(int currentNumber) {
+    public void setCurrentNumber(Integer currentNumber) {
         this.currentNumber = currentNumber;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    @Override
-    public String toString() {
-        return "NumberingRange{" +
-                "id='" + id + '\'' +
-                ", prefix='" + prefix + '\'' +
-                ", fromNumber=" + fromNumber +
-                ", toNumber=" + toNumber +
-                ", currentNumber=" + currentNumber +
-                ", active=" + active +
-                '}';
+    public String getResolutionNumber() {
+        return resolutionNumber;
+    }
+
+    public void setResolutionNumber(String resolutionNumber) {
+        this.resolutionNumber = resolutionNumber;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTechnicalKey() {
+        return technicalKey;
+    }
+
+    public void setTechnicalKey(String technicalKey) {
+        this.technicalKey = technicalKey;
     }
 }
