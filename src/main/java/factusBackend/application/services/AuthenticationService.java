@@ -45,4 +45,10 @@ public class AuthenticationService {
                 .bodyToMono(AuthenticationAdapter.AuthResponse.class)
                 .map(AuthenticationAdapter.AuthResponse::getAccessToken);
     }
+
+    public Mono<String> authenticate(AuthRequest authRequest) {
+        return authAdapter.authenticate(authRequest)
+                .map(AuthenticationAdapter.AuthResponse::getAccessToken);
+    }
+
 }

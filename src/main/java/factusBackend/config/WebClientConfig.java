@@ -11,7 +11,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("https://api.factus.com.co")
+                .baseUrl("https://api-sandbox.factus.com.co")
                 .build();
     }
 

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class InvoiceService {
@@ -58,16 +59,14 @@ public class InvoiceService {
                 });
     }
 
-    @Transactional
     public Mono<InvoiceResponseDTO> createInvoice(InvoiceRequestDTO invoiceRequest) {
         return authenticationService.getAccessToken()
-                .flatMap(token -> factusApiAdapter.createInvoice(invoiceRequest, token))
-                .map(response -> {
-                    // Map to Invoice entity and save
-                    Invoice invoice = mapToInvoice(invoiceRequest, response);
-                    createLocalInvoice(invoice);
-                    return response; // Return the API response
-                });
+                .flatMap(token -> webClient.post()
+                        .uri("/api/invoices")
+                        .header("Authorization", "Bearer " + token)
+                        .bodyValue(invoiceRequest)
+                        .retrieve()
+                        .bodyToMono(InvoiceResponseDTO.class));
     }
 
     public Mono<InvoiceResponseDTO> getInvoice(String invoiceNumber) {
@@ -85,32 +84,50 @@ public class InvoiceService {
 
     private Invoice mapToInvoice(InvoiceRequestDTO request, InvoiceResponseDTO response) {
         Invoice invoice = new Invoice();
-        // Number: Temporarily hardcoded since getNumber() doesn't exist in InvoiceResponseDTO
-        invoice.setNumber("INV-TEMP-001"); // Replace with actual field once InvoiceResponseDTO is provided
 
-        // ReferenceCode: Available in request
-        invoice.setReferenceCode(request.getReferenceCode() != null ? request.getReferenceCode() : "N/A");
+        // Obtener valores reales de la respuesta de la API
+        if (response.getData() != null) {
+            // Intentar obtener el número de factura de la respuesta
+            String documentNumber = "INV-TEMP-001"; // valor por defecto
 
-        // Status: Temporarily hardcoded
-        invoice.setStatus("PENDING"); // Replace with actual field once InvoiceResponseDTO is provided
+            // Extraer código de referencia
+            invoice.setReferenceCode(request.getReferenceCode() != null ?
+                    request.getReferenceCode() : "N/A");
 
-        // Total: Calculate from items if available, or set a default
-        String total = "0.0";
-        if (request.getItems() != null && !request.getItems().isEmpty()) {
-            total = String.valueOf(request.getItems().stream()
-                    .mapToDouble(item -> {
-                        // Use getPrice() instead of getUnitPrice()
-                        double price = item.getPrice() != null ? item.getPrice() : 0.0;
-                        int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
-                        // Apply discount if available
-                        double discountRate = item.getDiscountRate() != null ? item.getDiscountRate() : 0.0;
-                        double discountedPrice = price * (1 - discountRate / 100);
-                        return discountedPrice * quantity;
-                    })
-                    .sum());
+            // Establecer estado basado en la respuesta
+            invoice.setStatus(response.getStatus() != null ?
+                    response.getStatus() : "PENDING");
+
+            // Calcular total desde los items
+            String total = calculateTotal(request);
+            invoice.setTotal(total);
+        } else {
+            // Configuración por defecto si no hay datos en la respuesta
+            invoice.setNumber("INV-ERROR");
+            invoice.setReferenceCode(request.getReferenceCode() != null ?
+                    request.getReferenceCode() : "N/A");
+            invoice.setStatus("ERROR");
+            invoice.setTotal("0.0");
         }
-        invoice.setTotal(total);
 
         return invoice;
+    }
+
+    private String calculateTotal(InvoiceRequestDTO request) {
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            return "0.0";
+        }
+
+        double total = request.getItems().stream()
+                .mapToDouble(item -> {
+                    double price = item.getPrice() != null ? item.getPrice() : 0.0;
+                    int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
+                    double discountRate = item.getDiscountRate() != null ? item.getDiscountRate() : 0.0;
+                    double discountedPrice = price * (1 - discountRate / 100);
+                    return discountedPrice * quantity;
+                })
+                .sum();
+
+        return String.valueOf(total);
     }
 }
